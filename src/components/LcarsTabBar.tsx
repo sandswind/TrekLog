@@ -25,9 +25,10 @@ type TabConfig = {
 };
 
 const TAB_CONFIGS: TabConfig[] = [
-  { key: 'LogsTab',     label: 'LOGS',     icon: '◉', color: Colors.lcarsOrange },
-  { key: 'Timeline',    label: 'TIMELINE', icon: '⬡', color: Colors.lcarsPeriwinkle },
-  { key: 'Search',      label: 'SEARCH',   icon: '⌕', color: Colors.lcarsGold },
+  { key: 'LogsTab',   label: 'LOGS',     icon: '◉', color: Colors.lcarsOrange },
+  { key: 'Timeline',  label: 'TIMELINE', icon: '⬡', color: Colors.lcarsPeriwinkle },
+  { key: 'Search',    label: 'SEARCH',   icon: '⌕', color: Colors.lcarsGold },
+  { key: 'Settings',  label: 'SETTINGS', icon: '⚙', color: Colors.lcarsPurple },
 ];
 
 export const LcarsTabBar: React.FC<BottomTabBarProps> = ({ state, navigation }) => {
