@@ -91,3 +91,47 @@ export function groupByDate(entries: LogEntry[]): { date: string; items: LogEntr
   }
   return Array.from(map.entries()).map(([date, items]) => ({ date, items }));
 }
+
+// ── V2: tag helpers ───────────────────────────────────────────────────────────
+
+/** Return all unique tags across every log entry (sorted alphabetically) */
+export async function getAllTags(): Promise<string[]> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<{ tags: string }>(`SELECT tags FROM log_entries`);
+  const set = new Set<string>();
+  for (const row of rows) {
+    try {
+      const arr: string[] = JSON.parse(row.tags || '[]');
+      arr.forEach(t => t.trim() && set.add(t.trim()));
+    } catch (_) {}
+  }
+  return Array.from(set).sort((a, b) => a.localeCompare(b));
+}
+
+/** Search logs that contain ALL of the given tags */
+export async function searchByTags(tags: string[]): Promise<LogEntry[]> {
+  if (tags.length === 0) return getAllLogs();
+  const db = await getDb();
+  // SQLite LIKE-based tag filter — works for JSON-serialised arrays
+  const conditions = tags.map(() => `tags LIKE ?`).join(' AND ');
+  const params = tags.map(t => `%"${t}"%`);
+  const rows = await db.getAllAsync<any>(
+    `SELECT * FROM log_entries WHERE ${conditions} ORDER BY createdAt DESC`,
+    params
+  );
+  return rows.map(normalizeRow);
+}
+
+/** Full-text search across title + transcript + tags */
+export async function fullTextSearch(query: string): Promise<LogEntry[]> {
+  if (!query.trim()) return getAllLogs();
+  const db = await getDb();
+  const q = `%${query.trim()}%`;
+  const rows = await db.getAllAsync<any>(
+    `SELECT * FROM log_entries
+     WHERE title LIKE ? OR transcript LIKE ? OR tags LIKE ? OR stardate LIKE ?
+     ORDER BY createdAt DESC`,
+    [q, q, q, q]
+  );
+  return rows.map(normalizeRow);
+}
