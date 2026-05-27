@@ -29,6 +29,7 @@ import { RecordScreen }   from './src/screens/RecordScreen';
 import { LogDetailScreen }from './src/screens/LogDetailScreen';
 import { TimelineScreen } from './src/screens/TimelineScreen';
 import { SearchScreen }   from './src/screens/SearchScreen';
+import { SettingsScreen } from './src/screens/SettingsScreen';
 import { LcarsTabBar }    from './src/components/LcarsTabBar';
 import { Colors }         from './src/theme';
 import { getDb }          from './src/db/database';
@@ -47,6 +48,7 @@ export type TabParamList = {
   LogsTab:  undefined;
   Timeline: undefined;
   Search:   undefined;
+  Settings: undefined;
 };
 
 // ── Navigators ────────────────────────────────────────────────────────────────
@@ -63,6 +65,7 @@ function MainTabs() {
       <Tab.Screen name="LogsTab"  component={HomeScreen} />
       <Tab.Screen name="Timeline" component={TimelineScreen} />
       <Tab.Screen name="Search"   component={SearchScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
